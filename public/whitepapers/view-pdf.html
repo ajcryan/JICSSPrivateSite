@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Document - JICSS</title>
+  <link rel="icon" type="image/png" href="https://storage.googleapis.com/production-os-assets/assets/5753ed04-b465-4756-bca3-aaa6ad16bcf3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/common.css">
+    <!-- Load common.js early so Memberstack loads ASAP -->
+  <script src="/assets/common.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #333;
+      -webkit-font-smoothing: antialiased;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .pdf-container {
+      flex: 1;
+      width: 100%;
+      max-width: 1280px;
+      margin: 40px auto;
+      padding: 0 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .pdf-header {
+      margin-bottom: 20px;
+    }
+    
+    .pdf-header h1 {
+      color: #222;
+      font-size: 2em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .pdf-header .actions {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .pdf-header .actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #007cff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .pdf-header .actions a:hover {
+      background: #0066cc;
+      transform: translateY(-2px);
+    }
+    
+    .pdf-header .actions a.secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    .pdf-header .actions a.secondary:hover {
+      background: #e5e5e5;
+    }
+    
+    .pdf-viewer {
+      flex: 1;
+      width: 100%;
+      min-height: 600px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fafafa;
+    }
+    
+    .pdf-viewer iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+      border: none;
+    }
+    
+    .pdf-fallback {
+      padding: 40px;
+      text-align: center;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .pdf-fallback p {
+      margin-bottom: 20px;
+      color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .pdf-container {
+        padding: 0 20px;
+        margin: 20px auto;
+      }
+      
+      .pdf-header h1 {
+        font-size: 1.5em;
+      }
+      
+      .pdf-viewer {
+        min-height: 500px;
+      }
+      
+      .pdf-viewer iframe {
+        min-height: 500px;
+      }
+    }
+  </style>
+  <script src="https://api.memberstack.io/static/memberstack.js?custom" data-memberstack-id="app_cmiqs1b7y008x0tq4e19d6vn8"></script>
+<script>
+  // Protect this page - redirect if not logged in
+  window.$memberstackDom.getCurrentMember()
+    .then(({ data: member }) => {
+      if (!member) {
+        // Not logged in - redirect to login
+        window.location.href = '/TestMemberstack.html';
+      }
+    })
+    .catch(() => {
+      // Error or not logged in
+      window.location.href = '/TestMemberstack.html';
+    });
+</script>
+
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="pdf-container">
+    <div class="pdf-header">
+      <h1 id="pdf-title">Document</h1>
+      <div class="actions">
+        <a href="#" id="download-link" download>
+          <span>⬇</span> Download PDF
+        </a>
+        <a href="#" id="open-new-tab" target="_blank" class="secondary">
+          <span>↗</span> Open in New Tab
+        </a>
+      </div>
+    </div>
+    
+    <div class="pdf-viewer">
+      <iframe id="pdf-frame" src="" title="PDF Viewer"></iframe>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+
+  <!-- Firebase for Cloud Functions -->
+  <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-functions-compat.js"></script>
+
+  <script>
+    // Initialize Firebase
+    // TODO: Replace with your actual Firebase config from Firebase Console
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "jicssprivatesite.firebaseapp.com",
+      projectId: "jicssprivatesite",
+      storageBucket: "jicssprivatesite.firebasestorage.app"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const functions = firebase.functions();
+
+    // Get PDF path from URL parameter
+    // Usage: view-pdf.html?pdf=whitepapers/document.pdf&title=My Document
+    const urlParams = new URLSearchParams(window.location.search);
+    const pdfPath = urlParams.get('pdf');
+    const pdfTitle = urlParams.get('title') || 'Document';
+
+    async function loadPDF() {
+      if (!pdfPath) {
+        // No PDF specified
+        document.querySelector('.pdf-viewer').innerHTML = `
+          <div class="pdf-fallback">
+            <p>No PDF specified.</p>
+            <a href="/">Return to Home</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Set title
+      document.getElementById('pdf-title').textContent = pdfTitle;
+      document.title = pdfTitle + ' - JICSS';
+
+      try {
+        // Call Cloud Function to get signed URL
+        const getProtectedPdfUrl = functions.httpsCallable('getProtectedPdfUrl');
+        const result = await getProtectedPdfUrl({ pdfPath: pdfPath });
+        const signedUrl = result.data.url;
+
+        // Set iframe source with signed URL
+        document.getElementById('pdf-frame').src = signedUrl;
+
+        // Set download link
+        document.getElementById('download-link').href = signedUrl;
+
+        // Set open in new tab link
+        document.getElementById('open-new-tab').href = signedUrl;
+      } catch (error) {
+        console.error('Error loading PDF:', error);
+        document.querySelector('.pdf-viewer').innerHTML = `
+          <div class="pdf-fallback">
+            <p>Error loading PDF: ${error.message}</p>
+            <p>Please try again or contact support if the problem persists.</p>
+            <a href="/whitepapers/">Back to Whitepapers</a>
+          </div>
+        `;
+      }
+    }
+
+    // Load PDF when page is ready
+    loadPDF();
+  </script>
+</body>
+</html>

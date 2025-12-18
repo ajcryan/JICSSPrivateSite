@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memberstack Test Page</title>
+  <link rel="icon" type="image/png" href="https://storage.googleapis.com/production-os-assets/assets/5753ed04-b465-4756-bca3-aaa6ad16bcf3">
+  <link rel="stylesheet" href="/assets/common.css">
+    
+    <!-- INSTALL MEMBERSTACK HEADER CODE HERE -->
+    <!-- Replace 'pk_your_public_key' with your actual Memberstack public key -->
+    <!-- Load common.js early so Memberstack loads ASAP -->
+  <script src="/assets/common.js"></script>
+  
+</head>
+<body>
+  <!-- Header Navigation -->
+
+  <div id="header-placeholder"></div>
+
+  <!-- Main Content -->
+   <div data-ms-content="!members">
+    You can only see this text if you are NOT logged in.
+   </div>
+<div data-ms-content="members">
+  <h1>Private Site - Post Login</h1>
+    Welcome to the logged in Site
+    <!-- This button triggers the pop-up modal>
+        <button data-ms-action="logout">Log Out</button -->
+</div>
+    <div id="footer-placeholder"></div>
+  
+
+    
+</body>
+</html>

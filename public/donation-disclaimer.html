@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donation Disclaimer - JICSS</title>
+  <link rel="icon" type="image/png" href="https://storage.googleapis.com/production-os-assets/assets/5753ed04-b465-4756-bca3-aaa6ad16bcf3">
+  <link rel="stylesheet" href="/assets/common.css">
+      <!-- Load common.js early so Memberstack loads ASAP -->
+  <script src="/assets/common1.js"></script>
+  <style>
+    /* Reset and Base Styles (matching JICSS) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #333;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      background: #ffffff;
+    }
+    
+    
+    /* Main Content */
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 0 40px 80px;
+    }
+    
+    h1 {
+      color: #222;
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .intro {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 50px;
+      line-height: 1.8;
+    }
+    
+    /* Disclaimer Box */
+    .disclaimer-box {
+      background: #f9f9f9;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+    
+    .disclaimer-box h3 {
+      color: #222;
+      font-size: 1.3em;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    
+    .disclaimer-box p {
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    
+    .disclaimer-box p:last-of-type {
+      margin-bottom: 0;
+    }
+    
+    .disclaimer-box strong {
+      font-weight: 700;
+      color: #222;
+    }
+    
+    .disclaimer-box a {
+      color: #007cff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.3s;
+    }
+    
+    .disclaimer-box a:hover {
+      opacity: 0.7;
+    }
+    
+    /* Checkbox Section */
+    .agreement-section {
+      margin: 40px 0;
+    }
+    
+    .checkbox-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      padding: 20px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    
+    .checkbox-wrapper:hover {
+      border-color: #007cff;
+      background: #f9fbff;
+    }
+    
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    
+    .checkbox-wrapper label {
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Donate Button */
+    .button-wrapper {
+      margin: 40px 0;
+    }
+    
+    button {
+      width: 100%;
+      background: #007cff;
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0.4, 0, 1);
+      font-family: 'Lato', sans-serif;
+    }
+    
+    button:hover:not(:disabled) {
+      background: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 124, 255, 0.2);
+    }
+    
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      background: #e5e5e5;
+      color: #999;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Support Section */
+    .support-info {
+      background: #f9fbff;
+      border-left: 4px solid #007cff;
+      padding: 25px 30px;
+      margin: 50px 0 30px;
+      border-radius: 4px;
+    }
+    
+    .support-info h3 {
+      color: #222;
+      font-size: 1.2em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .support-info p {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .back-link {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .back-link a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 15px 20px;
+      }
+      
+      .nav {
+        display: none;
+      }
+      
+      .container {
+        padding: 0 20px 60px;
+        margin: 40px auto;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      .intro {
+        font-size: 16px;
+      }
+      
+      .disclaimer-box {
+        padding: 20px;
+      }
+      
+      .disclaimer-box h3 {
+        font-size: 1.1em;
+      }
+      
+      button {
+        font-size: 16px;
+        padding: 16px 30px;
+      }
+    }
+
+  </style>  
+
+</head>
+<body>
+  <!-- Header Navigation -->
+
+  <div id="header-placeholder"></div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Donation Disclaimer</h1>
+    
+    <p>By making a donation to the Japan Institute for Cyberspace Studies (JICSS), you acknowledge and agree to the following:</p>
+    
+    <h2>Purpose of Donations</h2>
+    <p>All donations to JICSS will be used exclusively to support our mission and activities, including:</p>
+    <ul>
+      <li>Research and investigations related to cybersecurity and cyberspace security</li>
+      <li>Information provision and public awareness activities on cyberspace security</li>
+      <li>Establishing and promoting voluntary standards for cyberspace security</li>
+      <li>Publishing journals and other publications on cyberspace security</li>
+      <li>Planning and operating research seminars and conferences</li>
+      <li>Policy advocacy and cooperation with government and administrative agencies</li>
+      <li>Collaboration and information exchange with related organisations</li>
+    </ul>
+    
+    <h2>Non-Profit Status</h2>
+    <p>JICSS is a general incorporated association (一般社団法人) organised under Japanese law. We do not distribute profits or surplus to members or donors. Any remaining assets in the event of dissolution will be donated to public interest corporations or governmental bodies as specified in our Articles of Association.</p>
+    
+    <h2>No Refunds</h2>
+    <p>Once submitted, donations cannot be refunded for any reason.</p>
+    
+    <h2>Tax Status</h2>
+    <p>Please consult with your tax adviser regarding the deductibility of donations to JICSS under applicable tax laws.</p>
+    
+    <h2>Contact</h2>
+    <p>For questions about how your donation will be used, please contact us at <a href="mailto:info@jicss.org">info@jicss.org</a></p>
+    
+    <div class="back-link">
+    <a href="#" id="backLink">Back to Donation Page</a>
+    </div>
+    <script>
+    // Dynamically set back link based on referrer
+    document.addEventListener('DOMContentLoaded', function() {
+        const backLink = document.getElementById('backLink');
+        const referrer = document.referrer;
+        
+        // If they came from a donation page, go back there
+        if (referrer && (referrer.includes('/donate') || referrer.includes('jicss.org'))) {
+        backLink.href = referrer;
+        } else {
+        // Default to main donate page
+        backLink.href = '/donate.html';
+        }
+    });
+    </script>
+
+  </div>
+  <div id="footer-placeholder"></div>
+  
+</body>
+</html>

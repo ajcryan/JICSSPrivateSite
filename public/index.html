@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JICSS Members Portal</title>
+  <link rel="icon" type="image/png" href="https://storage.googleapis.com/production-os-assets/assets/5753ed04-b465-4756-bca3-aaa6ad16bcf3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/common.css">
+  <script src="/assets/common.js"></script>
+
+  <style>
+    body {
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #333;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      background: #ffffff;
+    }
+
+    .hero {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      color: #222;
+      font-size: 3em;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2em;
+      color: #555;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .cta-buttons a {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .cta-buttons .primary {
+      background: #007cff;
+      color: white;
+    }
+
+    .cta-buttons .primary:hover {
+      background: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 124, 255, 0.2);
+    }
+
+    .cta-buttons .secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .cta-buttons .secondary:hover {
+      background: #e5e5e5;
+    }
+
+    .features {
+      max-width: 1000px;
+      margin: 80px auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+    }
+
+    .feature {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .feature h3 {
+      color: #222;
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+
+    .feature p {
+      color: #666;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2em;
+      }
+
+      .hero p {
+        font-size: 1.1em;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta-buttons a {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="hero">
+    <h1>Welcome to JICSS Members Portal</h1>
+    <p>Access exclusive research, whitepapers, and resources from the Japan Institute for Cyberspace Studies.</p>
+
+    <div class="cta-buttons">
+      <a href="/whitepapers/" class="primary" data-ms-content="members">View Whitepapers</a>
+      <a href="/TestMemberstack" class="primary" data-ms-content="!members">Member Login</a>
+      <a href="https://jicss.org/" class="secondary">Learn About JICSS</a>
+    </div>
+  </div>
+
+  <div class="features" data-ms-content="!members">
+    <div class="feature">
+      <h3>Exclusive Research</h3>
+      <p>Access cutting-edge cybersecurity research and policy analysis from leading experts.</p>
+    </div>
+
+    <div class="feature">
+      <h3>Whitepapers & Reports</h3>
+      <p>Download comprehensive reports on Japan's cybersecurity landscape and strategic recommendations.</p>
+    </div>
+
+    <div class="feature">
+      <h3>Community Access</h3>
+      <p>Join a network of cybersecurity professionals and policymakers shaping Japan's digital future.</p>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+</body>
+</html>
