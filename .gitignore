@@ -91,3 +91,4 @@ firebase-debug.*.log
 
 # Claude
 .claude/
+.emulator-data/

@@ -11,7 +11,7 @@
 const headerHTML = `
 <header class="header">
   <div class="header-container">
-    <a href="https://jicss.org/">
+    <a href="/">
       <img src="https://storage.googleapis.com/studio-design-asset-files/projects/BmqMD8eYOX/s-150x150_686290b7-1837-4dfb-b2f2-aa0d7b1af84d.svg" alt="JICSS" class="logo">
     </a>
       <a href="https://jicss.org/" >Japan Institute for CyberSpace Studies</a>

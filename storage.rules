@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow read access for signed URLs to work
+    // In production, signed URLs bypass these rules
+    // In emulator, this allows direct URL access for testing
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+

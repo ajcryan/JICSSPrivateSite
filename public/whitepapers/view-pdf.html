@@ -172,11 +172,10 @@
 
   <div id="footer-placeholder"></div>
 
-
-  <!-- Firebase for Cloud Functions -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <script>
     // Initialize Firebase
@@ -188,11 +187,13 @@
     };
     firebase.initializeApp(firebaseConfig);
     const functions = firebase.functions();
+    const auth = firebase.auth();
 
     // Connect to emulators when running locally
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Using Firebase emulators');
       functions.useEmulator('localhost', 5001);
+      auth.useEmulator('http://localhost:9099');
     }
 
     // Get PDF path from URL parameter
@@ -218,12 +219,27 @@
       document.title = pdfTitle + ' - JICSS';
 
       try {
-        // Call Cloud Function to get signed URL
+        // 1. Check Memberstack authentication
+        const { data: member } = await window.$memberstackDom.getCurrentMember();
+        if (!member) {
+          throw new Error('User not authenticated with Memberstack');
+        }
+
+        // 2. Sign in to Firebase Auth anonymously
+        // This allows the Cloud Function to verify the user is authenticated
+        let firebaseUser = auth.currentUser;
+        if (!firebaseUser) {
+          const userCredential = await auth.signInAnonymously();
+          firebaseUser = userCredential.user;
+          console.log('Signed in to Firebase Auth:', firebaseUser.uid);
+        }
+
+        // 3. Call Cloud Function to get signed PDF URL
         const getProtectedPdfUrl = functions.httpsCallable('getProtectedPdfUrl');
         const result = await getProtectedPdfUrl({ pdfPath: pdfPath });
         const signedUrl = result.data.url;
 
-        // Set iframe source with signed URL
+        // 4. Display PDF using signed URL
         document.getElementById('pdf-frame').src = signedUrl;
 
         // Set download link
@@ -231,6 +247,7 @@
 
         // Set open in new tab link
         document.getElementById('open-new-tab').href = signedUrl;
+
       } catch (error) {
         console.error('Error loading PDF:', error);
         document.querySelector('.pdf-viewer').innerHTML = `
@@ -243,8 +260,31 @@
       }
     }
 
-    // Load PDF when page is ready
-    loadPDF();
+    // Wait for Memberstack to be ready, then load PDF
+    async function initializePage() {
+      // Wait for Memberstack to be fully loaded
+      if (!window.$memberstackDom) {
+        console.log('Waiting for Memberstack to load...');
+        await new Promise((resolve) => {
+          const checkMemberstack = setInterval(() => {
+            if (window.$memberstackDom) {
+              clearInterval(checkMemberstack);
+              resolve();
+            }
+          }, 100);
+        });
+      }
+
+      // Now load the PDF
+      await loadPDF();
+    }
+
+    // Start initialization when page is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializePage);
+    } else {
+      initializePage();
+    }
   </script>
 </body>
 </html>

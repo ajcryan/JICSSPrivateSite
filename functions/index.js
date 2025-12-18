@@ -3,16 +3,22 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
+// Callable function to get protected PDF URLs with Firebase Auth
 exports.getProtectedPdfUrl = functions.https.onCall(async (data, context) => {
-  // Authentication check - require user to be logged in
-  if (!context.auth) {
+  // Check if we're running in emulator mode
+  const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true';
+
+  // Check Firebase Authentication (production only)
+  if (!context.auth && !isEmulator) {
     throw new functions.https.HttpsError(
       'unauthenticated',
       'User must be authenticated to access protected PDFs'
     );
   }
 
-  const { pdfPath } = data;
+  // The actual payload might be in data.data depending on SDK version
+  const payload = data.data || data;
+  const { pdfPath } = payload;
 
   // Validate PDF path is provided
   if (!pdfPath) {
@@ -50,16 +56,28 @@ exports.getProtectedPdfUrl = functions.https.onCall(async (data, context) => {
       throw new functions.https.HttpsError('not-found', 'PDF not found');
     }
 
-    // Generate signed URL (valid for 1 hour)
-    const [signedUrl] = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 60 * 60 * 1000
-    });
+    let url;
+
+    // In emulator mode, use direct emulator URL instead of signed URL
+    if (isEmulator) {
+      // Use the storage emulator URL
+      const bucketName = bucket.name;
+      url = `http://127.0.0.1:9199/v0/b/${bucketName}/o/${encodeURIComponent(pdfPath)}?alt=media`;
+      console.log(`⚠️  Emulator mode: Using direct storage URL`);
+    } else {
+      // Generate signed URL (valid for 1 hour) for production
+      const [signedUrl] = await file.getSignedUrl({
+        action: 'read',
+        expires: Date.now() + 60 * 60 * 1000
+      });
+      url = signedUrl;
+    }
 
     // Log access for security audit
-    console.log(`PDF accessed: ${pdfPath} by user: ${context.auth.uid}`);
+    const userId = context.auth ? context.auth.uid : 'emulator-user';
+    console.log(`PDF accessed: ${pdfPath} by user: ${userId}`);
 
-    return { url: signedUrl };
+    return { url };
 
   } catch (error) {
     console.error('Error generating PDF URL:', error);
