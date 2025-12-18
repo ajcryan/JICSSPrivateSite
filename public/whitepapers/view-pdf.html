@@ -179,7 +179,6 @@
 
   <script>
     // Initialize Firebase
-    // TODO: Replace with your actual Firebase config from Firebase Console
     const firebaseConfig = {
       apiKey: "AIzaSyB0UYL3dbJEOGVTP3e5QqcGATOUn0nsGS0",
       authDomain: "jicssprivatesite.firebaseapp.com",
@@ -188,6 +187,12 @@
     };
     firebase.initializeApp(firebaseConfig);
     const functions = firebase.functions();
+
+    // Connect to emulators when running locally
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('Using Firebase emulators');
+      functions.useEmulator('localhost', 5001);
+    }
 
     // Get PDF path from URL parameter
     // Usage: view-pdf.html?pdf=whitepapers/document.pdf&title=My Document
