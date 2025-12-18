@@ -224,20 +224,56 @@
         if (!member) {
           throw new Error('User not authenticated with Memberstack');
         }
+        console.log('Memberstack authenticated:', member.id);
 
         // 2. Sign in to Firebase Auth anonymously
         // This allows the Cloud Function to verify the user is authenticated
         let firebaseUser = auth.currentUser;
         if (!firebaseUser) {
+          console.log('Signing in to Firebase Auth...');
           const userCredential = await auth.signInAnonymously();
           firebaseUser = userCredential.user;
           console.log('Signed in to Firebase Auth:', firebaseUser.uid);
+        } else {
+          console.log('Already signed in to Firebase Auth:', firebaseUser.uid);
         }
 
-        // 3. Call Cloud Function to get signed PDF URL
-        const getProtectedPdfUrl = functions.httpsCallable('getProtectedPdfUrl');
-        const result = await getProtectedPdfUrl({ pdfPath: pdfPath });
-        const signedUrl = result.data.url;
+        // Wait for auth state to be fully established
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Verify we have a valid ID token
+        const idToken = await firebaseUser.getIdToken(true); // Force refresh
+        console.log('Got Firebase ID token, length:', idToken.length);
+
+        // 3. Call Cloud Function through Firebase Hosting (same-origin, no CORS issues)
+        console.log('Calling Cloud Function with pdfPath:', pdfPath);
+        
+        // Use the hosting rewrite - this avoids CORS completely
+        const functionUrl = '/api/getProtectedPdfUrl';
+        
+        console.log('Function URL (through hosting):', functionUrl);
+        
+        const response = await fetch(functionUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
+          body: JSON.stringify({ pdfPath: pdfPath })
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response:', errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('Cloud Function returned successfully');
+        const signedUrl = result.url;
 
         // 4. Display PDF using signed URL
         document.getElementById('pdf-frame').src = signedUrl;
@@ -250,11 +286,32 @@
 
       } catch (error) {
         console.error('Error loading PDF:', error);
+        console.error('Error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          stack: error.stack
+        });
+        
+        let errorMessage = error.message;
+        let troubleshooting = '';
+        
+        if (error.message.includes('NetworkError')) {
+          errorMessage = 'Unable to connect to the PDF service. This could be due to network issues or the service being temporarily unavailable.';
+          troubleshooting = '<p><strong>Troubleshooting:</strong></p><ul><li>Check your internet connection</li><li>Try refreshing the page</li><li>The service might be updating - try again in 2-3 minutes</li></ul>';
+        } else if (error.code === 'unauthenticated' || error.message.includes('Unauthorized')) {
+          errorMessage = 'Authentication failed. Please refresh the page and try again.';
+          troubleshooting = '<p><strong>Troubleshooting:</strong></p><ul><li>Clear your browser cache</li><li>Log out and log back in</li></ul>';
+        } else if (error.code === 'permission-denied') {
+          errorMessage = 'You do not have permission to access this PDF.';
+        }
+        
         document.querySelector('.pdf-viewer').innerHTML = `
           <div class="pdf-fallback">
-            <p>Error loading PDF: ${error.message}</p>
-            <p>Please try again or contact support if the problem persists.</p>
-            <a href="/whitepapers/">Back to Whitepapers</a>
+            <p><strong>Error loading PDF:</strong> ${errorMessage}</p>
+            ${troubleshooting}
+            <p style="margin-top: 20px;"><strong>Technical details:</strong><br><code style="font-size: 12px; background: #f5f5f5; padding: 10px; display: block; margin-top: 10px;">${error.message}</code></p>
+            <p style="margin-top: 20px;"><a href="/whitepapers/">Back to Whitepapers</a></p>
           </div>
         `;
       }
