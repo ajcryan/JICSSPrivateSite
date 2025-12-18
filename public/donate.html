@@ -10,8 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/common.css">
   <link rel="stylesheet" href="/assets/donate.css">
-  <!-- Load common.js early so Memberstack loads ASAP -->
-  <script src="/assets/common.js"></script>
 
   <style>
     /* Reset and Base Styles (matching JICSS) */
@@ -230,8 +228,20 @@
 </head>
 <body>
   <!-- Header Navigation -->
-
-  <div id="header-placeholder"></div>
+  <header class="header">
+    <div class="header-container">
+      <a href="https://jicss.org/">
+        <img src="https://storage.googleapis.com/studio-design-asset-files/projects/BmqMD8eYOX/s-150x150_686290b7-1837-4dfb-b2f2-aa0d7b1af84d.svg" alt="JICSS" class="logo">
+      </a>
+      <a href="https://jicss.org/">Japan Institute for CyberSpace Studies</a>
+      <nav class="nav">
+        <a href="/about">MISSION</a>
+        <a href="/team">TEAM</a>
+        <a href="/news">NEWS</a>
+        <a href="/contact">CONTACT</a>
+      </nav>
+    </div>
+  </header>
 
   <!-- Main Content -->
   <div class="container">
@@ -266,7 +276,15 @@
     </div>
   </div>
 
-    <div id="footer-placeholder"></div>
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; <script>document.write(new Date().getFullYear())</script> Japan Institute for Cyberspace Studies. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="https://jicss.org/privacypolicy">Privacy Policy</a>
+        <a href="https://jicss.org/contact">Contact</a>
+      </div>
+    </div>
+  </footer>
   
 
   <script src="/assets/common1.js"></script>
