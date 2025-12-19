@@ -11,19 +11,25 @@
 const headerHTML = `
 <header class="header">
   <div class="header-container">
-    <a href="/">
-      <img src="https://storage.googleapis.com/studio-design-asset-files/projects/BmqMD8eYOX/s-150x150_686290b7-1837-4dfb-b2f2-aa0d7b1af84d.svg" alt="JICSS" class="logo">
-    </a>
-      <a href="https://jicss.org/" >Japan Institute for CyberSpace Studies</a>
-      <nav class="nav">
-        <a data-ms-content="members" href="/whitepapers/">WHITE PAPERS</a>
-        <a href="/about">MISSION</a>
-        <a href="/team">TEAM</a>
-        <a href="/news">NEWS</a>
-        <a href="/contact">CONTACT</a>
-        <a data-ms-content="!members" data-ms-modal="login" href="#">Login</a>
-        <a data-ms-content="members" data-ms-action="logout" href="#">Logout</a>
-
+    <div class="header-left">
+      <a href="/">
+        <img src="https://storage.googleapis.com/studio-design-asset-files/projects/BmqMD8eYOX/s-150x150_686290b7-1837-4dfb-b2f2-aa0d7b1af84d.svg" alt="JICSS" class="logo">
+      </a>
+      <a href="https://jicss.org/" class="header-title">Japan Institute for CyberSpace Studies</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav" id="nav">
+      <a data-ms-content="members" href="/whitepapers/">WHITE PAPERS</a>
+      <a href="/about">MISSION</a>
+      <a href="/team">TEAM</a>
+      <a href="/news">NEWS</a>
+      <a href="/contact">CONTACT</a>
+      <a data-ms-content="!members" data-ms-modal="login" href="#">Login</a>
+      <a data-ms-content="members" data-ms-action="logout" href="#">Logout</a>
     </nav>
   </div>
 </header>
@@ -48,7 +54,37 @@ document.addEventListener('DOMContentLoaded', function() {
   const headerPlaceholder = document.getElementById('header-placeholder');
   const footerPlaceholder = document.getElementById('footer-placeholder');
   
-  if (headerPlaceholder) headerPlaceholder.innerHTML = headerHTML;
+  if (headerPlaceholder) {
+    headerPlaceholder.innerHTML = headerHTML;
+    
+    // Setup hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const nav = document.getElementById('nav');
+    
+    if (hamburger && nav) {
+      hamburger.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+      
+      // Close menu when clicking nav links
+      nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+          nav.classList.remove('active');
+          hamburger.classList.remove('active');
+        });
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!hamburger.contains(event.target) && !nav.contains(event.target)) {
+          nav.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    }
+  }
+  
   if (footerPlaceholder) {
     footerPlaceholder.innerHTML = footerHTML;
     // Set dynamic copyright year

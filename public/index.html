@@ -78,6 +78,22 @@
     .cta-buttons .secondary:hover {
       background: #e5e5e5;
     }
+    
+    .signup-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .signup-text a {
+      color: #007cff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .signup-text a:hover {
+      text-decoration: underline;
+    }
 
     .features {
       max-width: 1000px;
@@ -105,6 +121,12 @@
     }
 
     @media (max-width: 768px) {
+      .hero {
+        margin: 40px auto;
+        padding: 0 20px;
+        max-width: 100%;
+      }
+
       .hero h1 {
         font-size: 2em;
       }
@@ -116,10 +138,47 @@
       .cta-buttons {
         flex-direction: column;
         align-items: stretch;
+        gap: 15px;
+        padding: 0;
+        margin-left: 0;
+        margin-right: 0;
       }
 
       .cta-buttons a {
         width: 100%;
+        max-width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+      
+      .signup-text {
+        font-size: 13px;
+        padding: 0 10px;
+      }
+      
+      .features {
+        padding: 0 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding: 0 15px;
+        margin: 30px auto;
+      }
+
+      .hero h1 {
+        font-size: 1.6em;
+      }
+
+      .hero p {
+        font-size: 1em;
+      }
+
+      .cta-buttons a {
+        padding: 12px 16px;
+        font-size: 15px;
       }
     }
   </style>
@@ -136,6 +195,8 @@
       <a href="#" class="primary" data-ms-content="!members" data-ms-modal="login">Member Login</a>
       <a href="https://jicss.org/" class="secondary">Learn About JICSS</a>
     </div>
+    
+    <p class="signup-text" data-ms-content="!members">Don't have an account yet? <a href="#" data-ms-modal="signup">Sign up here</a></p>
   </div>
 
   <div class="features" data-ms-content="!members">
@@ -156,5 +217,56 @@
   </div>
 
   <div id="footer-placeholder"></div>
+  
+  <script>
+    // Memberstack doesn't auto-update data-ms-content immediately after login
+    // So we need to manually refresh the page after successful login
+    async function checkForLoginAndRefresh() {
+      // Wait for Memberstack to load
+      if (!window.$memberstackDom) {
+        setTimeout(checkForLoginAndRefresh, 100);
+        return;
+      }
+      
+      const memberstack = window.$memberstackDom;
+      
+      // Check if we just logged in (flag set in sessionStorage)
+      const justLoggedIn = sessionStorage.getItem('ms-just-logged-in');
+      if (justLoggedIn) {
+        sessionStorage.removeItem('ms-just-logged-in');
+        console.log('Refreshing after login to update UI...');
+        // Small delay to ensure Memberstack session is fully established
+        setTimeout(() => window.location.reload(), 300);
+        return;
+      }
+      
+      // Monitor for login by checking member status periodically
+      let lastMemberStatus = null;
+      const { data: initialMember } = await memberstack.getCurrentMember();
+      lastMemberStatus = initialMember ? 'logged-in' : 'logged-out';
+      
+      // Check every 500ms for status change
+      setInterval(async () => {
+        const { data: currentMember } = await memberstack.getCurrentMember();
+        const currentStatus = currentMember ? 'logged-in' : 'logged-out';
+        
+        // If status changed from logged-out to logged-in, set flag and refresh
+        if (lastMemberStatus === 'logged-out' && currentStatus === 'logged-in') {
+          sessionStorage.setItem('ms-just-logged-in', 'true');
+          console.log('Login detected, refreshing page...');
+          window.location.reload();
+        }
+        
+        lastMemberStatus = currentStatus;
+      }, 500);
+    }
+    
+    // Start monitoring when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', checkForLoginAndRefresh);
+    } else {
+      checkForLoginAndRefresh();
+    }
+  </script>
 </body>
 </html>
